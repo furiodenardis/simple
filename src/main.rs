@@ -11,7 +11,7 @@ fn main() {
     my_cpu.print_status();
     my_cpu.print_display();
     let next_op = my_cpu.fetch();
-    my_cpu.print_op(next_op);
+    my_cpu.decode(next_op);
 }
 
 struct Registers {
@@ -69,10 +69,20 @@ impl Cpu {
         println!("op : {:?}", op);
     }
 
+    // Our cpu has 32-bit instrutions with 8bit opcode 8bit mode and 16bit data (big-endian) 
+    // TODO: checkout the byteorder crate
     fn fetch(&self) -> (u8, u8, u16) {
         let op = self.memory[self.pc];
         let mode = self.memory[self.pc + 1];
         let data = (self.memory[self.pc + 2] as u16) << 8 | (self.memory[self.pc + 3] as u16);
         (op, mode, data)
+    }
+
+    fn decode(&self, instruction: (u8, u8, u16)) {
+        self.print_op(instruction);
+        let (op, mode, data) = instruction;
+        match op {
+            _ => println!("NOT IMPLEMENTED")
+        }
     }
 }
