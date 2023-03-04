@@ -1,17 +1,37 @@
+
+pub mod instructions;
+
+use instructions::*;
+
 fn main() {
     let mut my_cpu = Cpu {
         reg: init_registers(),
-        memory: [65; 65535],
+        memory: [0; 65535],
         pc: 0
     };
     my_cpu.memory[0] = 0x00;
     my_cpu.memory[1] = 0x01;
-    my_cpu.memory[2] = 0xff;
-    my_cpu.memory[3] = 0x00;
+    my_cpu.memory[2] = 0xde;
+    my_cpu.memory[3] = 0xad;
+    my_cpu.memory[4] = 0x01;
+    my_cpu.memory[5] = 0x00;
+    my_cpu.memory[6] = 0x00;
+    my_cpu.memory[7] = 0x01;
+    my_cpu.memory[8] = 0x02;
+    my_cpu.memory[9] = 0x02;
+    my_cpu.memory[10] = 0x00;
+    my_cpu.memory[11] = 0x02;
     my_cpu.print_status();
     my_cpu.print_display();
     let next_op = my_cpu.fetch();
     my_cpu.decode(next_op);
+    my_cpu.print_status();
+    let next_op = my_cpu.fetch();
+    my_cpu.decode(next_op);
+    my_cpu.print_status();
+    let next_op = my_cpu.fetch();
+    my_cpu.decode(next_op);
+    my_cpu.print_status();
 }
 
 struct Registers {
@@ -49,11 +69,11 @@ impl Cpu {
     }
 
     fn print_display(&self) {
-        let START_OF_DISPLAY_MEM: usize =  0xFFBF;
-        let LEN_OF_DISPLAY_MEM: usize =  0x0030;
+        let start_of_display_mem: usize =  0xFFBF;
+        let len_of_display_mem: usize =  0x0030;
     
-        for i in (0..LEN_OF_DISPLAY_MEM) {
-            let c = self.memory[START_OF_DISPLAY_MEM + i];
+        for i in 0..len_of_display_mem {
+            let c = self.memory[start_of_display_mem + i];
             if c < 32 {
                 print!(" ");
             } else {
@@ -78,10 +98,13 @@ impl Cpu {
         (op, mode, data)
     }
 
-    fn decode(&self, instruction: (u8, u8, u16)) {
+    fn decode(&mut self, instruction: (u8, u8, u16)) {
         self.print_op(instruction);
         let (op, mode, data) = instruction;
         match op {
+            0x00 => load_direct!(self, mode, data),
+            0x01 => load_register!(self, mode, data),
+            0x02 => load_indirect!(self, mode, data),
             _ => println!("NOT IMPLEMENTED")
         }
     }
