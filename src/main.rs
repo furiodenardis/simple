@@ -3,6 +3,10 @@ pub mod instructions;
 
 use instructions::*;
 
+#[cfg(test)]
+#[path = "./cpu_test.rs"]
+mod cpu_test;
+
 fn main() {
     let mut my_cpu = Cpu {
         reg: init_registers(),
@@ -102,10 +106,10 @@ impl Cpu {
         self.print_op(instruction);
         let (op, mode, data) = instruction;
         match op {
-            0x00 => load_direct!(self, mode, data),
-            0x01 => load_register!(self, mode, data),
-            0x02 => load_indirect!(self, mode, data),
+            0x00 =>  { load_direct!(self, mode, data); },
+            0x01 =>  { load_register!(self, mode, data); },
+            0x02 =>  { load_indirect!(self, mode, data); },
             _ => println!("NOT IMPLEMENTED")
-        }
+        };
     }
 }

@@ -8,9 +8,8 @@ macro_rules! load_direct {
     ($cpu:ident,$reg:ident,$data:ident) => {
         if $reg <= 7 {
             $cpu.reg.register[$reg as usize] = $data;
-            $cpu.pc += 4;
-        }
-    
+        };
+        $cpu.pc += 4;    
     }
 }
 
@@ -18,18 +17,18 @@ macro_rules! load_register {
     ($cpu:ident,$reg:ident,$data:ident) => {
         if $reg <= 7 && $data <= 7 {
             $cpu.reg.register[$reg as usize] = $cpu.reg.register[$data as usize];
-            $cpu.pc += 4;
         }
+        $cpu.pc += 4;
     }
 }
 
 
 macro_rules! load_indirect {
-    ($cpu:ident,$reg:ident,$data:ident) => {
+    ($cpu:ident,$reg:ident,$address:ident) => {
         if $reg <= 7 {
-            $cpu.reg.register[$reg as usize] = read_16!($cpu, $data);
-            $cpu.pc += 4;
+            $cpu.reg.register[$reg as usize] = read_16!($cpu, $address);
         }
+        $cpu.pc += 4;
     }
 }
 
